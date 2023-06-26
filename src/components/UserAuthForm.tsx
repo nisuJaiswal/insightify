@@ -4,17 +4,26 @@ import { Button } from "./ui/Button";
 import { cn } from "@/lib/utils";
 import Icon from "./Icon";
 import { signIn } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {}
 
 const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+
   const loginWithGoogle = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       await signIn("google");
     } catch (error) {
       // Generate Error Toast
+      toast({
+        title: "There was an Error",
+        description:
+          "There might be an error to SignIn With Google, Please try again after few minutes",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -25,8 +34,8 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
       {...props}
     >
       <Button
-        onClick={loginWithGoogle}
         isLoading={isLoading}
+        onClick={loginWithGoogle}
         className="gap-2 w-full"
         size={"sm"}
       >
