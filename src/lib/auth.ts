@@ -4,7 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import { nanoid } from "nanoid";
 
-export const oathOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
@@ -21,8 +21,8 @@ export const oathOptions: NextAuthOptions = {
   callbacks: {
     async session({ token, session }) {
       if (token) {
-        console.log("-------------------Token: ", token);
-        console.log("-------------------Session: ", session);
+        // console.log("-------------------Token: ", token);
+        // console.log("-------------------Session: ", session);
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
@@ -71,4 +71,4 @@ export const oathOptions: NextAuthOptions = {
   },
 };
 
-export const getAuthSession = () => getServerSession(oathOptions);
+export const getAuthSession = () => getServerSession(authOptions);

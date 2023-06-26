@@ -1,4 +1,4 @@
-import { LucideProps } from "lucide-react";
+import { LucideProps, User } from "lucide-react";
 
 const Icon = {
   logo: (props: LucideProps) => (
@@ -51,5 +51,6 @@ const Icon = {
       <path d="M1 1h22v22H1z" fill="none" />
     </svg>
   ),
+  user: User,
 };
 export default Icon;
