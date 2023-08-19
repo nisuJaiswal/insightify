@@ -21,12 +21,17 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ token, session }) {
       if (token) {
-        // console.log("-------------------Token: ", token);
-        // console.log("-------------------Session: ", session);
+        console.log("-------------------Token: ", token);
+        console.log("-------------------Session: ", session);
+        // @ts-ignore
         session.user.id = token.id;
+        // @ts-ignore
         session.user.name = token.name;
+        // @ts-ignore
         session.user.email = token.email;
+        // @ts-ignore
         session.user.image = token.picture;
+        // @ts-ignore
         session.user.username = token.username;
       }
 

@@ -60,6 +60,7 @@ const Page = () => {
       });
     },
     onSuccess: (data) => {
+      console.log("Created Successfully");
       router.push(`/r/${data}`);
     },
   });

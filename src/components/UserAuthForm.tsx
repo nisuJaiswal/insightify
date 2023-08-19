@@ -18,6 +18,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
       await signIn("google");
     } catch (error) {
       // Generate Error Toast
+      console.log(error);
       toast({
         title: "There was an Error",
         description:

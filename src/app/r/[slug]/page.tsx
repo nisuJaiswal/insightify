@@ -1,4 +1,5 @@
 import MiniCreatePost from "@/components/MiniCreatePost";
+import PostFeed from "@/components/PostFeed";
 import { INFINITE_SCROLL_PAGINATION_SUBREDDITS } from "@/config";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -10,7 +11,11 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
+  // params.slug = params.slug.split("%20").join(" ");
+  // console.log(params.slug);
   const { slug } = params;
+  // let checkedSlug = slug.split("%20").join(" ");
+  // console.log(checkedSlug);
   const session = await getAuthSession();
 
   const subreddit = await db.subreddit.findFirst({
@@ -29,7 +34,6 @@ const Page = async ({ params }: PageProps) => {
     },
     take: INFINITE_SCROLL_PAGINATION_SUBREDDITS,
   });
-
   if (!subreddit) return notFound();
 
   //   console.log("Found SUbReddit from /slug/page.tsx", subreddit);
@@ -42,6 +46,7 @@ const Page = async ({ params }: PageProps) => {
       <MiniCreatePost session={session} />
 
       {/* TODO: Show posts in user feed */}
+      <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} />
     </>
   );
 };
