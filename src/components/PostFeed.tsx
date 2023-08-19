@@ -13,9 +13,8 @@ interface PostFeedProps {
   subredditName?: string;
 }
 
-const session = useSession();
-
 const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
+  const session = useSession();
   const lastPostRef = useRef<HTMLElement>(null);
 
   //   For ref
