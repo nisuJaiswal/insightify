@@ -14,7 +14,7 @@ interface PostFeedProps {
 }
 
 const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
-  const session = useSession();
+  const { data: session } = useSession();
   const lastPostRef = useRef<HTMLElement>(null);
 
   //   For ref
@@ -61,7 +61,6 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
 
         // Checking if already Voted
         const currentVote = post.votes.find(
-          // @ts-ignore
           (vote) => vote.userId === session?.user.id
         );
         if (index === posts.length - 1) {
