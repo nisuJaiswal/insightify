@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 enum VoteType {
@@ -14,17 +13,17 @@ enum VoteType {
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -33,7 +32,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -41,7 +40,7 @@ model Session {
 }
 
 model User {
-  id                String         @id @default(cuid())
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
   name              String?
   email             String?        @unique
   emailVerified     DateTime?
@@ -60,75 +59,74 @@ model User {
 }
 
 model Subreddit {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]
 
-  creatorId   String?
+  creatorId   String? @db.ObjectId
   Creator     User?          @relation("CreatedBy", fields: [creatorId], references: [id])
   subscribers Subscription[]
-
-  @@index([name])
 }
 
 model Subscription {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  subredditId String   @db.ObjectId
   user        User      @relation(fields: [userId], references: [id])
-  userId      String
   subreddit   Subreddit @relation(fields: [subredditId], references: [id])
-  subredditId String
 
-  @@id([userId, subredditId])
+  @@unique([userId, subredditId])
 }
 
 model Post {
-  id          String    @id @default(cuid())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   content     Json?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  authorId    String    @db.ObjectId
+  subredditId String    @db.ObjectId
   author      User      @relation(fields: [authorId], references: [id])
-  authorId    String
   subreddit   Subreddit @relation(fields: [subredditId], references: [id])
-  subredditId String
   comments    Comment[]
   votes       Vote[]
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   text      String
   createdAt DateTime @default(now())
+  authorId  String   @db.ObjectId
+  postId    String   @db.ObjectId
+  replyToId String?  @db.ObjectId
   author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    String
-
-  replyToId String?
   replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies   Comment[] @relation("ReplyTo")
 
   votes     CommentVote[]
-  commentId String?
 }
 
 model Vote {
-  user   User     @relation(fields: [userId], references: [id])
-  userId String
-  post   Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId String
-  type   VoteType
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  postId  String @db.ObjectId
+  user    User  @relation(fields: [userId], references: [id])
+  post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  type    VoteType
 
-  @@id([userId, postId])
+  @@unique([userId, postId])
 }
 
 model CommentVote {
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId String
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  commentId String @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   type      VoteType
 
-  @@id([userId, commentId])
+  @@unique([userId, commentId])
 }
