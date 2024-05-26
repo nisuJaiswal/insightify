@@ -33,10 +33,10 @@ const Page = () => {
         }
 
         if (error.response?.status === 422) {
+          console.log(error);
           return toast({
             title: "Invalid Subreddit Name",
-            description:
-              "Please try again with the name between 3 to 21 characters",
+            description: `${error.response.data[0].message}`,
             variant: "destructive",
           });
         }
