@@ -14,6 +14,7 @@ interface PostFeedProps {
 }
 
 const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
+  console.log("Subreddit name: ", subredditName);
   const { data: session } = useSession();
   const lastPostRef = useRef<HTMLElement>(null);
 
@@ -44,7 +45,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
       },
     }
   );
-  // console.log(data);
+  console.log("Data: ", data);
 
   const posts = data?.pages.flatMap((page) => page) ?? initialPosts;
 
