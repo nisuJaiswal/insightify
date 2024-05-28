@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  console.log("URL: ", url);
+  // console.log("URL: ", url);
 
   const session = await getAuthSession();
 

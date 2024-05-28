@@ -68,7 +68,10 @@ export async function PATCH(req: Request) {
         return acc;
       }, 0);
 
+      console.log("Vote Amound: ", voteAmt);
+
       if (voteAmt > CACHE_AFTER_UPVOTES) {
+        console.log("inside vote amount");
         const cachePayload: CachedPost = {
           authorUsername: post.author.username ?? "",
           content: JSON.stringify(post.content),
