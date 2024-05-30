@@ -2,6 +2,7 @@ import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { FC } from "react";
 import PostComment from "./PostComment";
+import CreateComment from "./CreateComment";
 
 interface CommentSectionProps {
   postId: string;
@@ -11,7 +12,7 @@ const CommentSection = async ({ postId }: CommentSectionProps) => {
   const comments = await db.comment.findMany({
     where: {
       postId,
-      replyToId: null,
+      replyToId: null, // Ensure this condition is properly interpreted by the query
     },
     include: {
       author: true,
@@ -24,11 +25,12 @@ const CommentSection = async ({ postId }: CommentSectionProps) => {
       },
     },
   });
+  console.log("Comments: ", comments);
   return (
     <div className="flex flex-col gap-y-4 mt-4">
       <hr className="w-full h-px my-6" />
 
-      {/* TODO: Create Comment Component */}
+      <CreateComment postId={postId} />
 
       <div className="flex-col gap-y-6 mt-4">
         {comments
@@ -49,7 +51,12 @@ const CommentSection = async ({ postId }: CommentSectionProps) => {
             return (
               <div key={topLevelComment.id} className="flex flex-col">
                 <div className="mb-2">
-                  <PostComment />
+                  <PostComment
+                    postId={postId}
+                    currentVote={topLevelCommentVote}
+                    votesAmt={topLevelCommentVotesAmount}
+                    comment={topLevelComment}
+                  />
                 </div>
               </div>
             );
