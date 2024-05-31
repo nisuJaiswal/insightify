@@ -12,7 +12,7 @@ const CommentSection = async ({ postId }: CommentSectionProps) => {
   const comments = await db.comment.findMany({
     where: {
       postId,
-      replyToId: null, // Ensure this condition is properly interpreted by the query
+      replyToId: { isSet: false },
     },
     include: {
       author: true,

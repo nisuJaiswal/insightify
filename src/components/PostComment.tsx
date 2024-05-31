@@ -89,8 +89,10 @@ const PostComment: FC<PostCommentProps> = ({
         </Button>
         {isReplying ? (
           <div className="grid w-full gap-1.5">
-            <Label htmlFor="comment ">Your Comment</Label>
-            <div className="mt-2">
+            <Label htmlFor="comment" className="ml-2">
+              Your Comment
+            </Label>
+            <div className="mt-1">
               <Textarea
                 id="comment"
                 value={input}
@@ -99,7 +101,14 @@ const PostComment: FC<PostCommentProps> = ({
                 placeholder="Share your thoughts"
               />
             </div>
-            <div className="mt-2 flex justify-end">
+            <div className="mt-2 flex justify-end gap-2">
+              <Button
+                tabIndex={-1}
+                variant={"subtle"}
+                onClick={() => setIsReplying(false)}
+              >
+                Cancel
+              </Button>
               <Button
                 onClick={() => {
                   if (!input) return;
