@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Prisma, Subreddit } from "@prisma/client";
@@ -11,9 +11,10 @@ import {
   CommandItem,
   CommandList,
 } from "./ui/Command";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { User } from "lucide-react";
 import debounce from "lodash.debounce";
+import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 
 const Searchbar = () => {
   const router = useRouter();
@@ -43,8 +44,20 @@ const Searchbar = () => {
     request();
   }, []);
 
+  const commandRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(commandRef, () => {
+    setInput("");
+  });
+  const pathname = usePathname();
+  useEffect(() => {
+    setInput("");
+  }, [pathname]);
   return (
-    <Command className="relative rounded-lg border max-w-lg z-50 overflow-visible">
+    <Command
+      ref={commandRef}
+      className="relative rounded-lg border max-w-lg z-50 overflow-visible"
+    >
       <CommandInput
         className="border-none outline-none focus:border-none focus:outline-none ring-0"
         placeholder="Seach Communities..."
