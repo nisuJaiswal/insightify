@@ -44,6 +44,7 @@ export async function PATCH(req: Request) {
             type: voteType,
           },
         });
+        return new Response("Ok");
       }
     }
     await db.commentVote.create({
