@@ -24,7 +24,7 @@ export async function PATCH(req: Request) {
     });
     return new Response("Ok");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     if (error instanceof z.ZodError) {
       return new Response("Invalid Request passed", { status: 422 });
     } else {

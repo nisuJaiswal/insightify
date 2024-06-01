@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { count } from "console";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);

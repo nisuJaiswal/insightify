@@ -6,7 +6,7 @@ import { z } from "zod";
 export async function POST(req: Request) {
   try {
     const session = await getAuthSession();
-    console.log("FROM /api/subreddit/route.ts: session: ", session);
+    // console.log("FROM /api/subreddit/route.ts: session: ", session);
 
     // Checking if user logged in
     if (!session?.user) {

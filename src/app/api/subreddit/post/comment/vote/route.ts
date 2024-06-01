@@ -1,8 +1,8 @@
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { redis } from "@/lib/redit";
+// import { redis } from "@/lib/redit";
 import { CommentVoteValidator } from "@/lib/validators/vote";
-import { CachedPost } from "@/types/redis";
+// import { CachedPost } from "@/types/redis";
 import { z } from "zod";
 
 export async function PATCH(req: Request) {

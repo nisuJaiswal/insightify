@@ -15,7 +15,7 @@ const Navbar = async () => {
         <Link href="/" className="flex gap-2 items-center">
           <Icon.logo className="h-8 w-8 sm:h-6 sm:w-6" />
           <p className="hidden md:block text-sm font-medium text-zinc-700">
-            Breaddit
+            Insightify
           </p>
         </Link>
 
