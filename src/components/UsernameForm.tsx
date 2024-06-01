@@ -19,44 +19,10 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-
+import { z } from "zod";
 const UsernameForm = ({ user }: { user: Pick<User, "id" | "username"> }) => {
   const router = useRouter();
-
-  const { mutate: updateUsername, isLoading } = useMutation({
-    mutationFn: async ({ name }: UsernameRequest) => {
-      const payload: UsernameRequest = { name };
-      const { data } = await axios.patch("/api/username", payload);
-      return data;
-    },
-    onError: (err) => {
-      if (err instanceof AxiosError) {
-        if (err.response?.status === 409) {
-          return toast({
-            title: "Username Already Exists",
-            description: "Please try again with the different username name",
-            variant: "destructive",
-          });
-        }
-      }
-
-      return toast({
-        title: "There was an Error",
-        description: "Something went Wrong, Please try again lateer",
-        variant: "destructive",
-      });
-    },
-
-    onSucess: () => {
-      toast({
-        title: "Username Change",
-        description: "Username updated successfully",
-      });
-
-      router.refresh();
-    },
-  });
-
+  type FormData = z.infer<typeof UsernameValidator>;
   const {
     handleSubmit,
     register,
@@ -68,6 +34,37 @@ const UsernameForm = ({ user }: { user: Pick<User, "id" | "username"> }) => {
     },
   });
 
+  const { mutate: updateUsername, isLoading } = useMutation({
+    mutationFn: async ({ name }: FormData) => {
+      const payload: FormData = { name };
+
+      const { data } = await axios.patch(`/api/username/`, payload);
+      return data;
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 409) {
+          return toast({
+            title: "Username already taken.",
+            description: "Please choose another username.",
+            variant: "destructive",
+          });
+        }
+      }
+
+      return toast({
+        title: "Something went wrong.",
+        description: "Your username was not updated. Please try again.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      toast({
+        description: "Your username has been updated.",
+      });
+      router.refresh();
+    },
+  });
   return (
     <form
       onSubmit={handleSubmit((e) => {
