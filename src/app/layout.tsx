@@ -4,12 +4,15 @@ import { Toaster } from "@/components/ui/Toaster";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
+
+// Meta Data for SEO
 export const metadata = {
   title: "Insightify - Share your insights with others",
   description:
     "Web app that allows users to share advanced post with others, made using TypeScript",
 };
 
+// Font
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -27,6 +30,7 @@ export default function RootLayout({
         inter.className
       )}
     >
+      {/* Providers for react-tanstack-query */}
       <Providers>
         <body className="min-h-screen pt-12 antialiased bg-slate-50">
           {/* @ts-expect-error server component */}

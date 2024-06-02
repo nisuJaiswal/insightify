@@ -18,7 +18,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
   const { data: session } = useSession();
   const lastPostRef = useRef<HTMLElement>(null);
 
-  //   For ref
+  //   ref for infinite scrolling
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
     threshold: 1,
