@@ -1,3 +1,3 @@
-### Clone of the Reddit
+### Insightify - Share your insights with others
 
-**Currently, This is under development**
+#### Live Demo: https://insightify-8gts.vercel.app/
