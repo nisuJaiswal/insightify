@@ -44,7 +44,7 @@ const page = async ({ params }: PageProps) => {
 
   return (
     <div>
-      <div className="h-full flex flex-col sm:flex-row items-center sm:items-start justify-between">
+      <div className="h-full flex  sm:flex-row items-center sm:items-start justify-between">
         <Suspense fallback={<PostVoteShell />}>
           {/* @ts-expect-error server compoenent */}
           <PostVoteServer
@@ -82,7 +82,7 @@ const page = async ({ params }: PageProps) => {
             }
           >
             {/* @ts-expect-error server component */}
-            <CommentSection postId={post?.id ?? cachedpost.id} />
+            <CommentSection postId={post?.id ?? cachedPost.id} />
           </Suspense>
         </div>
       </div>

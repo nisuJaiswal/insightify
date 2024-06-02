@@ -52,7 +52,7 @@ const layout = async ({
     },
   });
   return (
-    <div className="container max-w-7xl mx-auto h-full p-12">
+    <div className="container max-w-7xl mx-auto h-full p-2">
       <div>
         {/* TODO: Make a back button  */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6">
