@@ -59,9 +59,9 @@ const layout = async ({
           <div className="flex flex-col col-span-2 space-y-6">{children}</div>
 
           {/* Info SIdebar */}
-          <div className="hidden md:block border rounded-md border-gray-200 order-first h-fit md:order-last">
+          <div className="md:block border rounded-md border-gray-200 order-first h-fit md:order-last">
             <div className="px-6 py-4">
-              <p className="font-semibold py-3">About r/{slug}</p>
+              <p className="font-semibold py-3">About r/{subreddit.name}</p>
             </div>
 
             <dl className="divide-y divide-gray-100 px-6 py-4 text-sm leading-6 bg-white">

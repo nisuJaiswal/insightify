@@ -55,7 +55,7 @@ const Page = () => {
 
       toast({
         title: "There was an Error",
-        description: "Something went Wrong, Please try again lateer",
+        description: "You might be not logged in or there is any other issue!",
         variant: "destructive",
       });
     },

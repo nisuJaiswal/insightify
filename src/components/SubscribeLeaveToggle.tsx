@@ -99,7 +99,7 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
       isLoading={isSubscribeLoading}
       onClick={() => subscribe()}
     >
-      Join To Post
+      Join Community
     </Button>
   );
 };

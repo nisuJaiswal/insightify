@@ -8,9 +8,10 @@ import EditorJS from "@editorjs/editorjs";
 import { uploadFiles } from "@/lib/uploadthing";
 import { toast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Variable } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useCustomToast } from "@/hooks/user-custom-toast";
 
 const Editor = ({ subredditId }: { subredditId: string }) => {
   const {
@@ -22,6 +23,7 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
     defaultValues: { subredditId, title: "", content: null },
   });
 
+  const { loginToast } = useCustomToast();
   const ref = useRef<EditorJS>();
   const [isMounted, setIsMounted] = useState(false);
   const _titleRef = useRef<HTMLTextAreaElement>(null);
@@ -132,10 +134,32 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
 
       return data;
     },
-    onError: () => {
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 422) {
+          console.log(error);
+          return toast({
+            title: "Invalid Post Name",
+            description: `${error.response.data[0].message}`,
+            variant: "destructive",
+          });
+        }
+
+        if (error.response?.status === 500) {
+          return toast({
+            title: "Internal Server Error",
+            description: "There is problem in server, please try again later",
+            variant: "destructive",
+          });
+        }
+        if (error.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
       return toast({
         title: "Something went wrong",
-        description: "Post cannot be posted",
+        description: "You might be not logged in or there is any other error!",
         variant: "destructive",
       });
     },
