@@ -9,7 +9,6 @@ import { uploadFiles } from "@/lib/uploadthing";
 import { toast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { Variable } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCustomToast } from "@/hooks/user-custom-toast";
 
@@ -201,7 +200,7 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
         className="w-fit"
         id="subreddit-post-form"
       >
-        <div className="prose prose-stone darK:prose-invert">
+        <div className="prose prose-stone dark:prose-invert">
           <TextareaAutosize
             ref={(e) => {
               titleRef(e);
