@@ -29,7 +29,6 @@ const Searchbar = () => {
       if (!input) return [];
 
       const { data } = await axios.get(`/api/search?q=${input}`);
-      console.log("Dataaaaaaaaaaaaaaaaaaa"+ data)
       return data as (Subreddit & {
         _count: Prisma.SubredditCountOutputType;
       })[];
@@ -83,7 +82,7 @@ const Searchbar = () => {
                   value={subreddit.name}
                 >
                   <User className="h-5 w-5 mr-2" />
-                  <a href={`/r/${subreddit.name}`}>r/{subreddit.name}</a>
+                  <a href={`/r/${subreddit.name}`}>{subreddit.name}</a>
                 </CommandItem>
               ))}
             </CommandGroup>

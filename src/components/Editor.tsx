@@ -1,4 +1,5 @@
 "use client";
+
 import TextareaAutosize from "react-textarea-autosize";
 import { useForm } from "react-hook-form";
 import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
@@ -23,17 +24,16 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
   });
 
   const { loginToast } = useCustomToast();
-  const ref = useRef<EditorJS>();
+  const ref = useRef<EditorJS | null>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const _titleRef = useRef<HTMLTextAreaElement>(null);
+  const _titleRef = useRef<HTMLTextAreaElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (typeof window !== undefined) setIsMounted(true);
+    setIsMounted(true);
   }, []);
 
-  // Dynamically load heavy imports
   const initializeEditor = useCallback(async () => {
     const EditorJs = (await import("@editorjs/editorjs")).default;
     const Header = (await import("@editorjs/header")).default;
@@ -46,10 +46,10 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
     const ImageTool = (await import("@editorjs/image")).default;
 
     if (!ref.current) {
-      const editor = new EditorJS({
+      ref.current = new EditorJs({
         holder: "editor",
         onReady() {
-          ref.current = editor;
+          console.log("Editor.js is ready!");
         },
         placeholder: "Type here to write post...",
         inlineToolbar: true,
@@ -67,13 +67,18 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
             config: {
               uploader: {
                 async uploadByFile(file: File) {
-                  const [res] = await uploadFiles([file], "imageUploader");
-                  return {
-                    success: 1,
-                    file: {
-                      url: res.fileUrl,
-                    },
-                  };
+                  try {
+                    const response = await uploadFiles("imageUploader", {files: [file]});
+          
+                    return {
+                      success: 1,
+                      file: {
+                        url: response[0]?.url, // Ensure response has fileUrl
+                      },
+                    };
+                  } catch (error) {
+                    console.error("Image upload failed:", error);
+                  }
                 },
               },
             },
@@ -90,56 +95,44 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
 
   useEffect(() => {
     if (Object.keys(errors).length) {
-      for (const [_key, value] of Object.entries(errors)) {
+      Object.values(errors).forEach((error) => {
         toast({
-          title: "Something went Wrong",
-          description: (value as { message: string }).message,
+          title: "Something went wrong",
+          description: error.message,
           variant: "destructive",
         });
-      }
+      });
     }
   }, [errors]);
 
   useEffect(() => {
     const init = async () => {
       await initializeEditor();
-      setTimeout(() => {
-        //set focus on title
-        _titleRef.current?.focus();
-      }, 0);
+      setTimeout(() => _titleRef.current?.focus(), 0);
     };
 
     if (isMounted) {
       init();
       return () => {
-        ref.current?.destroy;
-        ref.current = undefined;
+        if (ref.current) {
+          ref.current.destroy();
+          ref.current = null;
+        }
       };
     }
   }, [isMounted, initializeEditor]);
 
   const { mutate: createPost } = useMutation({
-    mutationFn: async ({
-      title,
-      content,
-      subredditId,
-    }: PostCreationRequest) => {
-      const paylaod: PostCreationRequest = {
-        title,
-        content,
-        subredditId,
-      };
-      const { data } = await axios.post("/api/subreddit/post/create", paylaod);
-
+    mutationFn: async (payload: PostCreationRequest) => {
+      const { data } = await axios.post("/api/subreddit/post/create", payload);
       return data;
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 422) {
-          console.log(error);
           return toast({
             title: "Invalid Post Name",
-            description: `${error.response.data[0].message}`,
+            description: error.response.data[0]?.message,
             variant: "destructive",
           });
         }
@@ -147,10 +140,11 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
         if (error.response?.status === 500) {
           return toast({
             title: "Internal Server Error",
-            description: "There is problem in server, please try again later",
+            description: "There is a problem with the server, please try again later.",
             variant: "destructive",
           });
         }
+
         if (error.response?.status === 401) {
           return loginToast();
         }
@@ -158,21 +152,19 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
 
       return toast({
         title: "Something went wrong",
-        description: "You might be not logged in or there is any other error!",
+        description: "You might not be logged in or there was another error!",
         variant: "destructive",
       });
     },
 
     onSuccess: () => {
-      // r/[slug]/submit
       const newPathname = pathname.split("/").slice(0, -1).join("/");
-
       router.push(newPathname);
       router.refresh();
 
       return toast({
-        title: "Post Created Succefully",
-        description: "Your post created Successfully",
+        title: "Post Created Successfully",
+        description: "Your post was created successfully.",
         variant: "default",
       });
     },
@@ -183,7 +175,7 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
 
     const payload: PostCreationRequest = {
       title: data.title,
-      content: blocks,
+      content: blocks || null,
       subredditId,
     };
 
@@ -204,8 +196,6 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
           <TextareaAutosize
             ref={(e) => {
               titleRef(e);
-
-              // @ts-ignore
               _titleRef.current = e;
             }}
             {...rest}
