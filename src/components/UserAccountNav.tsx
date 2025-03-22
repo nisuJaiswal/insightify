@@ -16,7 +16,7 @@ interface UserAccountNavProps {
   user: Pick<User, "name" | "image" | "email">;
 }
 
-const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
+const UserAccountNav: FC<UserAccountNavProps> = ({ user }) =>  {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

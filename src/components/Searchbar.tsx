@@ -29,6 +29,7 @@ const Searchbar = () => {
       if (!input) return [];
 
       const { data } = await axios.get(`/api/search?q=${input}`);
+      console.log("Dataaaaaaaaaaaaaaaaaaa"+ data)
       return data as (Subreddit & {
         _count: Prisma.SubredditCountOutputType;
       })[];
