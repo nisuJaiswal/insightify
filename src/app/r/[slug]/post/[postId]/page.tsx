@@ -26,8 +26,8 @@ const page = async ({ params }: PageProps) => {
   // const cachedPost = (await redis.hgetall(
   //   `post:${params.postId}`
   // )) as CachedPost;
-  let cachedPost = false
   let post: (Post & { votes: Vote[]; author: User }) | null = null;
+  let cachedPost;
   if (!cachedPost) {
     // If not cached, find from db
     post = await db.post.findFirst({
@@ -40,6 +40,7 @@ const page = async ({ params }: PageProps) => {
       },
     });
   }
+  cachedPost = post
 
   if (!post && !cachedPost) notFound();
 
@@ -49,7 +50,7 @@ const page = async ({ params }: PageProps) => {
         <Suspense fallback={<PostVoteShell />}>
         {/* @ts-expect-error server compoenent */}
           <PostVoteServer
-            // postId={post?.id ?? cachedPost.id}
+            postId={post?.id ?? cachedPost?.id!}
             getData={async () => {
               return await db.post.findUnique({
                 where: {
@@ -65,17 +66,17 @@ const page = async ({ params }: PageProps) => {
 
         <div className="sm w-full flex-1 bg-white p-4 rounded-sm">
           <p className="max-h-40 mt-1 truncate text-gray-500 font-semibold">
-            Posted By u/{post?.author.username ?? cachedPost.authorUsername}{" "}
+            Posted By u/{post?.author.username ?? cachedPost?.author.username}{" "}
             <span className="font-normal">
               {formatTimeToNow(
-                new Date(post?.createdAt ?? cachedPost.createdAt)
+                new Date(post?.createdAt ?? cachedPost?.createdAt!)
               )}
             </span>
           </p>
           <h1 className="text-xl font-semibold py-2 leading-6 text-gray-900">
-            {post?.title ?? cachedPost.title}
+            {post?.title ?? cachedPost?.title}
           </h1>
-          <EditorOutput content={post?.content ?? cachedPost.content} />
+          <EditorOutput content={post?.content ?? cachedPost?.content} />
 
           <Suspense
             fallback={

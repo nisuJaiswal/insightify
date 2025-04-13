@@ -98,7 +98,7 @@ const Editor = ({ subredditId }: { subredditId: string }) => {
       Object.values(errors).forEach((error) => {
         toast({
           title: "Something went wrong",
-          description: error.message,
+          description: error.message?.toString() ?? "Error",
           variant: "destructive",
         });
       });
