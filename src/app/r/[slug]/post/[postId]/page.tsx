@@ -21,11 +21,12 @@ export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 const page = async ({ params }: PageProps) => {
+  console.log("Getting Cached Dataaaaaaaaaaaaaaaaaa")
   // Getting Data from Cache stored in upstach
-  const cachedPost = (await redis.hgetall(
-    `post:${params.postId}`
-  )) as CachedPost;
-
+  // const cachedPost = (await redis.hgetall(
+  //   `post:${params.postId}`
+  // )) as CachedPost;
+  let cachedPost = false
   let post: (Post & { votes: Vote[]; author: User }) | null = null;
   if (!cachedPost) {
     // If not cached, find from db

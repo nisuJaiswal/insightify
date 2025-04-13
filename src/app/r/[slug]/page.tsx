@@ -11,6 +11,7 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
+  // console.log("Heyyyyyyyyyyyyyyyyyyyy")
   // params.slug = params.slug.split("%20").join(" ");
   // console.log(params.slug);
   const { slug } = params;
@@ -36,7 +37,7 @@ const Page = async ({ params }: PageProps) => {
   });
   if (!subreddit) return notFound();
 
-  //   console.log("Found SUbReddit from /slug/page.tsx", subreddit);
+    console.log("Found SUbReddit from /slug/page.tsx", subreddit);
   return (
     <>
       <h1 className="text-3xl md:text-4xl font-bold h-14">
